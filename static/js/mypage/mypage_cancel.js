@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        fetch("http://43.200.242.111/api/mypage/cancel", {
+        fetch("http://www.rootairs.com/api/mypage/cancel", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",

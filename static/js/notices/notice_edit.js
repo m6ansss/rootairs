@@ -3,8 +3,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const urlParams = new URLSearchParams(window.location.search);
     const noticeId = urlParams.get("notice_id");
-    const apiUrl = `http://43.200.242.111/api/notices/detail/${noticeId}`;
-    const editApiUrl = `http://43.200.242.111/api/notices/edit/${noticeId}`;
+    const apiUrl = `http://www.rootairs.com/api/notices/detail/${noticeId}`;
+    const editApiUrl = `http://www.rootairs.com/api/notices/edit/${noticeId}`;
 
     if (!noticeId) {
         alert("❌ 공지사항 ID가 없습니다.");

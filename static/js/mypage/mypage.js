@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const editProfileBtn = document.getElementById("editProfileBtn");
     if (editProfileBtn) {
         editProfileBtn.addEventListener("click", function () {
-            fetch("http://43.200.242.111/api/mypage/edit", {
+            fetch("http://www.rootairs.com/api/mypage/edit", {
                 method: "GET",
                 credentials: "include",
                 mode: "cors"
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
  * ✅ 로그인 상태 확인 및 네비게이션 바 업데이트
  */
 function checkLoginStatus() {
-    fetch("http://43.200.242.111/api/member/status", {
+    fetch("http://www.rootairs.com/api/member/status", {
         method: "GET",
         credentials: "include",
         mode: "cors"
@@ -49,7 +49,7 @@ function checkLoginStatus() {
 
         if (data.is_authenticated) {
             navbarMember.innerHTML = `
-               <li class="navbar_signup"><a href="http://43.200.242.111/api/member/logout">로그아웃</a></li> 
+               <li class="navbar_signup"><a href="http://www.rootairs.com/api/member/logout">로그아웃</a></li> 
 	       <li class="navbar_login"<a href="http://www.rootairs.com:80/mypage/mypage.html">마이페이지</a></li>
             `;
         } else {
@@ -66,7 +66,7 @@ function checkLoginStatus() {
  * ✅ 사용자 정보 가져오기 및 UI 업데이트
  */
 function loadUserInfo() {
-    fetch("http://43.200.242.111/api/mypage", {
+    fetch("http://www.rootairs.com/api/mypage", {
         method: "GET",
         credentials: "include",
         mode: "cors"
@@ -95,7 +95,7 @@ function loadUserInfo() {
  */
 async function generateTickets() {
     try {
-        const response = await fetch("http://43.200.242.111/api/mypage/get_tickets", {
+        const response = await fetch("http://www.rootairs.com/api/mypage/get_tickets", {
             method: "GET",
             credentials: "include",
             mode: "cors"

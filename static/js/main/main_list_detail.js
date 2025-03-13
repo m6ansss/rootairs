@@ -1,6 +1,6 @@
                 // 네비게이션 스크립트
     document.addEventListener("DOMContentLoaded", function () {
-        fetch("http://43.200.242.111/api/member/status", {
+        fetch("http://www.rootairs.com/api/member/status", {
                 method: "GET",
                 credentials:"include"
             })
@@ -12,13 +12,13 @@
                     if (data.is_admin) {
                         // ✅ 관리자 계정
                         navbarMember.innerHTML = `
-                            <li class="navbar_signup"><a href="http://43.200.242.111/api/member/logout">로그아웃</a></li>
+                            <li class="navbar_signup"><a href="http://www.rootairs.com/api/member/logout">로그아웃</a></li>
                             <li class="navbar_login"><a href="http://www.rootairs.com:80/admin/admin_man.html">회원정보</a></li>
                         `;
                     } else {
                         // ✅ 일반 로그인 사용자
                         navbarMember.innerHTML = `
-                            <li class="navbar_signup"><a href="http://43.200.242.111/api/member/logout">로그아웃</a></li>
+                            <li class="navbar_signup"><a href="http://www.rootairs.com/api/member/logout">로그아웃</a></li>
                             <li class="navbar_login"><a href="http://www.rootairs.com:80/mypage/mypage.html">마이페이지</a></li>
                         `;
                     }
@@ -111,8 +111,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // ✅ fetch를 사용하여 `POST` 요청 보내기
-console.log("📢 [JS] API 요청 시작: POST http://43.200.242.111/api/main/book");
-fetch("http://43.200.242.111/api/main/book", {
+console.log("📢 [JS] API 요청 시작: POST http://www.rootairs.com/api/main/book");
+fetch("http://www.rootairs.com/api/main/book", {
     method: "POST",
     credentials: "include",  // ✅ 인증 쿠키 포함!
     headers: {
@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // ✅ API 요청 URL 생성
-    const apiUrl = `http://43.200.242.111/api/main/list/detail/${flightId}?passengers=${passengers}`;
+    const apiUrl = `http://www.rootairs.com/api/main/list/detail/${flightId}?passengers=${passengers}`;
     console.log("API 요청 URL:", apiUrl); // ✅ URL 확인
 
     // ✅ `fetch`를 사용하여 항공편 정보 가져오기

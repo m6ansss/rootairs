@@ -1,7 +1,7 @@
 
                 // 네비게이션 스크립트
     document.addEventListener("DOMContentLoaded", function () {
-        fetch("http://43.200.242.111/api/member/status", {
+        fetch("http://www.rootairs.com/api/member/status", {
                 method: "GET",
                 credentials:"include"
             })
@@ -13,13 +13,13 @@
                     if (data.is_admin) {
                         // ✅ 관리자 계정
                         navbarMember.innerHTML = `
-                            <li class="navbar_signup"><a href="http://43.200.242.111/api/member/logout">로그아웃</a></li>
+                            <li class="navbar_signup"><a href="http://www.rootairs.com/api/member/logout">로그아웃</a></li>
                             <li class="navbar_login"><a href="http://www.rootairs.com:80/admin/admin_man.html">회원정보</a></li>
                         `;
                     } else {
                         // ✅ 일반 로그인 사용자
                         navbarMember.innerHTML = `
-                            <li class="navbar_signup"><a href="http://43.200.242.111/api/member/logout">로그아웃</a></li>
+                            <li class="navbar_signup"><a href="http://www.rootairs.com/api/member/logout">로그아웃</a></li>
                             <li class="navbar_login"><a href="http://www.rootairs.com:80/mypage/mypage.html">마이페이지</a></li>
                         `;
                     }
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
         formData.set("isSecret", isSecretValue);  // 기존 append 대신 set 사용
         console.log("🔥 [DEBUG] isSecret 값:", isSecretValue);  // ✅ 디버깅 로그 추가
  
-        fetch("http://43.200.242.111/api/qna/create", {
+        fetch("http://www.rootairs.com/api/qna/create", {
             method: "POST",
             body: formData,
 	    credentials:"include"
