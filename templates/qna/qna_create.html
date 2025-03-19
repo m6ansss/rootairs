@@ -54,40 +54,6 @@
         </form>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            document.getElementById("qnaForm").addEventListener("submit", function (event) {
-                event.preventDefault();
-
-                let formData = new FormData();
-                formData.append("title", document.getElementById("title").value);
-                formData.append("content", document.getElementById("content").value);
-                formData.append("isSecret", document.getElementById("private").checked ? "true" : "false");
-
-                let fileInput = document.getElementById("file");
-                if (fileInput.files.length > 0) {
-                    formData.append("file", fileInput.files[0]);
-                }
-
-                fetch("/api/qna/create", {  // ✅ API 호출 방식으로 변경
-                    method: "POST",
-                    body: formData,
-                    credentials: "include"
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message) {
-                        alert(data.message);
-                        window.location.href = "http://www.rootairs.com:80/qna/qna.html";  // ✅ 정확한 경로 지정
-                    } else {
-                        alert("문의 등록 실패: " + data.error);
-                    }
-                })
-                .catch(error => console.error("문의 등록 중 오류 발생:", error));
-            });
-        });
-    </script>
-
     <script src="/static/js/qna/qna_create.js"></script>
 </body>
 
