@@ -3,11 +3,20 @@ document.addEventListener("DOMContentLoaded", function () {
     loadUserInfo();
     generateTickets();
 
-    // ✅ 회원 정보 수정 버튼 클릭 시 이벤트
+    // ✅ 뒤로가기 BFCache 대응
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+            // BFCache에서 로드되었을 경우 → 세션 재검사
+            checkLoginStatus();
+        }
+    }); 
+
+
+  // ✅ 회원 정보 수정 버튼 클릭 시 이벤트
     const editProfileBtn = document.getElementById("editProfileBtn");
     if (editProfileBtn) {
         editProfileBtn.addEventListener("click", function () {
-            fetch("http://www.rootairs.com/api/mypage/edit", {
+            fetch("http://58.127.241.84:60119/api/mypage/edit", {
                 method: "GET",
                 credentials: "include",
                 mode: "cors"
@@ -26,9 +35,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ✅ 회원탈퇴 버튼 클릭 이벤트 추가
     const deleteAccountBtn = document.getElementById("deleteAccountBtn");
-    if (deleteAccountBtn) {
+     if (deleteAccountBtn) {
         deleteAccountBtn.addEventListener("click", function () {
-            window.location.href = "http://www.rootairs.com:80/mypage/mypage_cancel.html";
+            window.location.href = "http://58.127.241.84:61080/mypage/mypage_cancel.html";
         });
     }
 });
@@ -37,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
  * ✅ 로그인 상태 확인 및 네비게이션 바 업데이트
  */
 function checkLoginStatus() {
-    fetch("http://www.rootairs.com/api/member/status", {
+    fetch("http://58.127.241.84:60119/api/member/status", {
         method: "GET",
         credentials: "include",
         mode: "cors"
@@ -49,14 +58,22 @@ function checkLoginStatus() {
 
         if (data.is_authenticated) {
             navbarMember.innerHTML = `
-               <li class="navbar_signup"><a href="http://www.rootairs.com/api/member/logout">로그아웃</a></li> 
-	       <li class="navbar_login"<a href="http://www.rootairs.com:80/mypage/mypage.html">마이페이지</a></li>
+               <li class="navbar_signup"><a href="http://58.127.241.84:60119/api/member/logout">로그아웃</a></li> 
+	       <li class="navbar_login"<a href="http://58.127.241.84:61080/mypage/mypage.html">마이페이지</a></li>
             `;
         } else {
             navbarMember.innerHTML = `
-               <li class="navbar_signup"><a href="http://www.rootairs.com:80/member/member_email.html">회원가입</a></li>
-               <li class="navbar_login"><a href="http://www.rootairs.com:80/member/member_login.html">로그인</a></li>
+               <li class="navbar_signup"><a href="http://58.127.241.84:61080/member/member_email.html">회원가입</a></li>
+               <li class="navbar_login"><a href="http://58.127.241.84:61080/member/member_login.html">로그인</a></li>
             `;
+        
+            // ✅ 세션 없으면 마이페이지 접근 차단
+            if (window.location.pathname.includes("/mypage/")) {
+                alert("세션이 만료되었습니다. 로그인 페이지로 이동합니다.");
+                window.location.href = "http://58.127.241.84:61080/member/member_login.html";
+            }
+
+
         }
     })
     .catch(error => console.error("🚨 사용자 상태 확인 오류:", error));
@@ -66,7 +83,7 @@ function checkLoginStatus() {
  * ✅ 사용자 정보 가져오기 및 UI 업데이트
  */
 function loadUserInfo() {
-    fetch("http://www.rootairs.com/api/mypage", {
+    fetch("http://58.127.241.84:60119/api/mypage", {
         method: "GET",
         credentials: "include",
         mode: "cors"
@@ -75,7 +92,7 @@ function loadUserInfo() {
     .then(data => {
         if (!data.user) {
             alert("사용자 정보를 불러올 수 없습니다. 로그인 상태를 확인하세요.");
-            window.location.href = "http://www.rootairs.com:80/member/member_login.html";
+            window.location.href = "http://58.127.241.84:61080/member/member_login.html";
             return;
         }
 
@@ -95,7 +112,7 @@ function loadUserInfo() {
  */
 async function generateTickets() {
     try {
-        const response = await fetch("http://www.rootairs.com/api/mypage/get_tickets", {
+        const response = await fetch("http://58.127.241.84:60119/api/mypage/get_tickets", {
             method: "GET",
             credentials: "include",
             mode: "cors"
@@ -123,7 +140,9 @@ async function generateTickets() {
                         <img src="/static/images/plane.png">
                         <span class="title">No. ${ticket.booking_id}</span>
                     </div>
-                    <button class="details-btn">상세 보기</button>
+                    <div class="ticket-price">
+                        <span class="price-price">${ticket.price} KRW</span>
+                    </div>
                 </div>
                 <div class="ticket-body">
                     <div class="passenger-name">

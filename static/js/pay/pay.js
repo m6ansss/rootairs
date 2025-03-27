@@ -1,6 +1,16 @@
 // 네비게이션 스크립트
 document.addEventListener("DOMContentLoaded", function () {
-    fetch("http://www.rootairs.com/api/member/status", {
+    // ✅ 뒤로 가기(BFCache) 복귀 시 강제 리디렉션
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
+            console.warn("뒤로 가기 감지됨! 결제 완료 후 pay.html 복귀 차단");
+            alert("결제를 이미 완료하셨습니다. 메인 페이지로 이동합니다.");
+            window.location.href = "http://58.127.241.84:61080/main/";
+        }
+    });
+
+
+    fetch("http://58.127.241.84:60119/api/member/status", {
     method: "GET",
     credentials:"include"
     })
@@ -12,21 +22,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (data.is_admin) {
                     // ✅ 관리자 계정
                     navbarMember.innerHTML = `
-                        <li class="navbar_signup"><a href="http://www.rootairs.com/api/member/logout">로그아웃</a></li>
-                        <li class="navbar_login"><a href="http://www.rootairs.com:80/admin/admin_man.html">회원정보</a></li>
+                        <li class="navbar_signup"><a href="http://58.127.241.84:60119/api/member/logout">로그아웃</a></li>
+                        <li class="navbar_login"><a href="http://58.127.241.84:61080/admin/admin_man.html">회원정보</a></li>
                     `;
                 } else {
                     // ✅ 일반 로그인 사용자
                     navbarMember.innerHTML = `
-                        <li class="navbar_signup"><a href="http://www.rootairs.com/api/member/logout">로그아웃</a></li>
-                        <li class="navbar_login"><a href="http://www.rootairs.com:80/mypage/mypage.html">마이페이지</a></li>
+                        <li class="navbar_signup"><a href="http://58.127.241.84:60119/api/member/logout">로그아웃</a></li>
+                        <li class="navbar_login"><a href="http://58.127.241.84:61080/mypage/mypage.html">마이페이지</a></li>
                     `;
                 }
             } else {
                 // ✅ 비로그인 상태
                 navbarMember.innerHTML = `
-                    <li class="navbar_signup"><a href="http://www.rootairs.com:80/member/member_email.html">회원가입</a></li>
-                    <li class="navbar_login"><a href="http://www.rootairs.com:80/member/member_login.html">로그인</a></li>
+                    <li class="navbar_signup"><a href="http://58.127.241.84:61080/member/member_email.html">회원가입</a></li>
+                    <li class="navbar_login"><a href="http://58.127.241.84:61080/member/member_login.html">로그인</a></li>
                 `;
             }
         })
@@ -45,16 +55,14 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    console.log(`✅ 불러온 예약 정보 - flight_id: ${flightId}, passengerNames: ${passengerNames}`);
 
     // ✅ 결제 정보 API(`pay_data_common`) 호출
-    fetch(`http://www.rootairs.com/api/pay/pay_data_common?flight_id=${flightId}`, {
+    fetch(`http://58.127.241.84:60119/api/pay/pay_data_common?flight_id=${flightId}`, {
         method: "GET",
         credentials: "include"
     })
     .then(response => response.json())
     .then(data => {
-        console.log("✅ DEBUG: pay_data_common API 응답 데이터 →", data);
     
         if (data.error) {
             console.error("결제 데이터 오류:", data.error);
@@ -63,7 +71,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // ✅ 여기서 price 값이 undefined인지 확인!
-        console.log("DEBUG: price 값 확인 →", data.price);
         let realtotalprice = data.price * passengerNames.length;
         // ✅ HTML 요소 업데이트
         document.getElementById("departure").textContent = data.departure_airport;
@@ -83,7 +90,6 @@ document.addEventListener("DOMContentLoaded", function () {
         alert("결제 정보를 불러오지 못했습니다.");
     });
 
-    console.log("DEBUG: JavaScript 로드 완료, 결제 시스템 초기화 중...");
 
     const mileageInput = document.getElementById("mileage-input");
     const applyMileageButton = document.getElementById("apply-mileage");
@@ -106,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function fetchMileage() {
         try {
-            let response = await fetch("http://www.rootairs.com/api/pay/get_mileage", {
+            let response = await fetch("http://58.127.241.84:60119/api/pay/get_mileage", {
                 method: "GET",
                 credentials: "include"
             });
@@ -146,11 +152,9 @@ document.addEventListener("DOMContentLoaded", function () {
     
     
     let totalAmount = getIntValue("final-amount");
-    console.log("DEBUG: totalAmount 확인", totalAmount); // 🛠 확인용 로그
 
     // ✅ 탑승자별 운임 내역을 동적으로 생성하는 함수
     function updatePassengerList(price) {
-        console.log("DEBUG: updatePassengerList 내부 price 확인 →", price); // 추가
         
         const passengerListContainer = document.getElementById("passenger-list");
         if (!passengerListContainer) {
@@ -168,7 +172,6 @@ document.addEventListener("DOMContentLoaded", function () {
             passengerItem.classList.add("passenger-item");
 
             // ✅ 여기서 price가 정상적으로 적용되는지 확인!
-            console.log(`DEBUG: ${name}의 개별 운임 → ${price}`);
 
     
             // ✅ 인당 운임을 `price`로 설정 (0원이 아닌 실제 값)
@@ -180,7 +183,6 @@ document.addEventListener("DOMContentLoaded", function () {
             passengerListContainer.appendChild(passengerItem);
         });
     
-        console.log("✅ DEBUG: 탑승자 목록 업데이트 완료 (운임 적용됨)");
     }
 
     // ✅ 페이지 로드 시 탑승자 목록 업데이트 실행
@@ -195,7 +197,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     applyMileageButton.addEventListener("click", function () {
-        console.log("DEBUG: 마일리지 적용 버튼 클릭됨");
 
         let totalMileage = getIntValue("total-mileage"); // 보유 마일리지
         let inputMileage = parseInt(mileageInput.value.replace(/,/g, ""), 10) || 0;
@@ -243,7 +244,6 @@ document.addEventListener("DOMContentLoaded", function () {
         // ✅ 변경된 `finalMileage` 값을 전역 변수에 저장
         finalMileage = newTotalMileageFinal; 
     
-        console.log(`DEBUG: 사용 마일리지 = ${appliedMileage}, 최종 결제 금액 = ${updatedFinalAmount}, 적립 마일리지 = ${newEarnedMileage}, 결제 후 보유 마일리지 = ${newTotalMileageFinal}`);
         alert("마일리지가 적용되었습니다!");
     });
 
@@ -275,11 +275,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if (selectedId === "rootpay") {
             rootPaySection.style.display = "block"; // 전체 섹션 표시
             rootPayBalanceRow.style.display = "block"; // ROOT PAY 잔액 표시
-            console.log("✅ DEBUG: Root PAY 선택됨 → 모든 정보 표시");
         } else if (selectedId === "kg-inicis") {
             rootPaySection.style.display = "block"; // 전체 섹션 표시
             rootPayBalanceRow.style.display = "none"; // ROOT PAY 잔액 숨김
-            console.log("✅ DEBUG: KG 이니시스 선택됨 → ROOT PAY 잔액 숨김");
         }
 
         // ✅ 선택된 결제 수단 저장
@@ -298,7 +296,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ✅ 결제 버튼 클릭 이벤트
     document.getElementById("pay-button").addEventListener("click", async function () { 
-        console.log("DEBUG: 결제 버튼 클릭됨, 선택된 결제 수단 →", selectedPayment);
     
         if (!selectedPayment) {
             alert("결제 수단을 선택해주세요!");
@@ -310,8 +307,6 @@ document.addEventListener("DOMContentLoaded", function () {
         let rootpayBalance = getIntValue("rootpay-balance");
         let appliedMileage = getIntValue("mileage-used"); // ✅ 사용된 마일리지
 
-        console.log(`✅ DEBUG: 최종 결제 금액 = ${finalPaymentAmount}`);
-        console.log(`✅ DEBUG: Root PAY 잔액 = ${rootpayBalance}`);
         
         let flightIdElement = localStorage.getItem("selected_flight_id");
     
@@ -332,7 +327,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // ✅ 세션에서 사용자 정보 가져오기
         let userId, username;
         try {
-            let response = await fetch("http://www.rootairs.com/api/member/status", {
+            let response = await fetch("http://58.127.241.84:60119/api/member/status", {
                 method: "GET",
                 credentials: "include"
             });
@@ -374,7 +369,7 @@ document.addEventListener("DOMContentLoaded", function () {
             flight_id: flightId
         });
     
-        let paymentUrl = `http://www.rootairs.com:80/pay/pay_info?${queryParams.toString()}`;
+        let paymentUrl = `http://58.127.241.84:61080/pay/pay_info?${queryParams.toString()}`;
     
         if (selectedPayment === "rootpay") {
             console.log("✅ DEBUG: Root PAY 결제 진행 중...");
@@ -386,7 +381,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 paymentWindow.focus();
             }
         } else if (selectedPayment === "kg-inicis") {
-            console.log("✅ DEBUG: KG 이니시스 결제 진행 중...");
             processInicisPayment(finalPaymentAmount);
         }
     });
@@ -394,7 +388,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // ✅ 결제 완료 후 부모 창 닫고 결과 이동
     window.addEventListener("message", function (event) {
         if (event.data && event.data.redirect_url) {
-            console.log(`DEBUG: 결제 완료 → ${event.data.redirect_url}`);
             if (paymentWindow) {
                 paymentWindow.close();
             }
@@ -403,7 +396,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     async function processInicisPayment(amount) {  
-        console.log("DEBUG: KG 이니시스 결제 시작 (금액: " + amount + "원)");
     
         let buyerEmail = document.getElementById("email")?.value || "test@default.com";
         let buyerName = document.getElementById("username")?.value || "Guest";
@@ -412,7 +404,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let flightId = localStorage.getItem("selected_flight_id");
     
         try {
-            let response = await fetch("http://www.rootairs.com/api/member/status", {  
+            let response = await fetch("http://58.127.241.84:60119/api/member/status", {  
                 method: "GET",
                 credentials: "include"
             });
@@ -439,7 +431,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }, async function (rsp) {  
                 if (rsp.success) {
                     try {
-                        let paymentResponse = await fetch("http://www.rootairs.com/api/pay/process_inicis_payment", {
+                        let paymentResponse = await fetch("http://58.127.241.84:60119/api/pay/process_inicis_payment", {
                             method: "POST",
                             credentials: "include",
                             body: new URLSearchParams({
@@ -456,7 +448,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         let result = await paymentResponse.json();
     
                         if (result.success && result.redirect_url) {
-                            console.log("✅ DEBUG: 부모창으로 리다이렉트 메시지 전송");
                             
                             // ✅ 부모창이 있는 경우 → 부모창으로 리다이렉트 요청
                             if (window.opener) {

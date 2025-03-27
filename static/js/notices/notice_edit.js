@@ -3,8 +3,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const urlParams = new URLSearchParams(window.location.search);
     const noticeId = urlParams.get("notice_id");
-    const apiUrl = `http://www.rootairs.com/api/notices/detail/${noticeId}`;
-    const editApiUrl = `http://www.rootairs.com/api/notices/edit/${noticeId}`;
+    const apiUrl = `http://58.127.241.84:60119/api/notices/detail/${noticeId}`;
+    const editApiUrl = `http://58.127.241.84:60119/api/notices/edit/${noticeId}`;
 
     if (!noticeId) {
         alert("❌ 공지사항 ID가 없습니다.");
@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("existingFile").textContent = data.file_url.split('/').pop();
                 document.getElementById("existingFile").setAttribute("data-file-url", data.file_url);
             }
+
         })
         .catch(error => console.error("❌ 공지사항 불러오기 오류:", error));
 
@@ -81,11 +82,24 @@ function updateNotice(noticeId, editApiUrl) {
         formData.append("file", fileInput.files[0]);
     } else {
         // 기존 파일 유지
-        const existingFile = document.getElementById("existingFile").getAttribute("data-file-url");
-        if (existingFile) {
-            formData.append("existing_file", existingFile);
-        }
+       // const existingFile = document.getElementById("existingFile").getAttribute("data-file-url");
+       // if (existingFile) {
+       //     formData.append("existing_file", existingFile);
+      //  }
+  //  }
+//test code
+// 기존 파일 유지
+const existingFileElem = document.getElementById("existingFile");
+
+if (existingFileElem) {
+    const existingFile = existingFileElem.getAttribute("data-file-url");
+    if (existingFile) {
+        formData.append("existing_file", existingFile);
     }
+} else {
+    console.warn("⚠️ existingFile 요소를 찾을 수 없습니다. 기존 파일 유지 불가.");
+}
+}
 
     fetch(editApiUrl, {
         method: "POST",

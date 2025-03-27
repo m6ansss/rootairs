@@ -132,7 +132,7 @@ a {
     width: 80%;
     max-width: 1300px;
     text-align: center;
-    height: 900px;
+    height: 1040px;
     
 }
 
@@ -252,8 +252,9 @@ input[type="text"] {
     cursor: pointer;
     padding: 5px 10px;
     border: 1px solid #ddd;
-    background-color: #555;
+    background-color: #f00;
     border-radius: 5px;
+    white-space: nowrap;
 }
 
 .delete-btn:hover {
@@ -265,4 +266,25 @@ input[type="text"] {
     width: 25%;
     margin-right: 10px;
     padding: 20px;
+}
+.mileage-edit {
+    display: flex;
+}
+
+.edit-in {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 100%;
+}
+
+.edit-btn {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    color: white;
+    cursor: pointer;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    background-color: #555;
+    border-radius: 5px;
+    white-space: nowrap;
 }

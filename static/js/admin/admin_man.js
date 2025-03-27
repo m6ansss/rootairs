@@ -1,7 +1,7 @@
 
                 // 네비게이션 스크립트
     document.addEventListener("DOMContentLoaded", function () {
-        fetch("http://www.rootairs.com/api/member/status", {
+        fetch("http://58.127.241.84:60119/api/member/status", {
                 mcdethod: "GET",
                 credentials:"include"
             })
@@ -13,21 +13,21 @@
                     if (data.is_admin) {
                         // ✅ 관리자 계정
                         navbarMember.innerHTML = `
-                            <li class="navbar_signup"><a href="http://www.rootairs.com/api/member/logout">로그아웃</a></li>
-                            <li class="navbar_login"><a href="http://www.rootairs.com:80/admin/admin_man.html">회원정보</a></li>
+                            <li class="navbar_signup"><a href="http://58.127.241.84:60119/api/member/logout">로그아웃</a></li>
+                            <li class="navbar_login"><a href="http://58.127.241.84:61080/admin/admin_man.html">회원정보</a></li>
                         `;
                     } else {
                         // ✅ 일반 로그인 사용자
                         navbarMember.innerHTML = `
-                            <li class="navbar_signup"><a href="http://www.rootairs.com/api/member/logout">로그아웃</a></li>
-                            <li class="navbar_login"><a href="http://www.rootairs.com:80/mypage/mypage.html">마이페이지</a></li>
+                            <li class="navbar_signup"><a href="http://58.127.241.84:60119/api/member/logout">로그아웃</a></li>
+                            <li class="navbar_login"><a href="http://58.127.241.84:61080/mypage/mypage.html">마이페이지</a></li>
                         `;
                     }
                 } else {
                     // ✅ 비로그인 상태
                     navbarMember.innerHTML = `
-                        <li class="navbar_signup"><a href="http://www.rootairs.com:80/member/member_email.html">회원가입</a></li>
-                        <li class="navbar_login"><a href="http://www.rootairs.com:80/member/member_login.html">로그인</a></li>
+                        <li class="navbar_signup"><a href="http://58.127.241.84:61080/member/member_email.html">회원가입</a></li>
+                        <li class="navbar_login"><a href="http://58.127.241.84:61080/member/member_login.html">로그인</a></li>
                     `;
                 }
             })
@@ -59,7 +59,7 @@ let currentPage = 1;
 
 async function fetchMembers() {
     try {
-        const response = await fetch('http://www.rootairs.com/api/admin/get_members', {
+        const response = await fetch('http://58.127.241.84:60119/api/admin/get_members', {
            method: 'GET',
            credentials: 'include'
         });
@@ -101,6 +101,13 @@ function displayMembers() {
                 <td><input type="text" value="${member.username}" readonly></td>
                 <td><input type="text" value="${member.phone_number}" readonly></td>
                 <td><input type="text" value="${member.email}" readonly></td>
+                <td><input type="text" value="${member.mileage}" readonly></td>
+                <td>
+                    <div class="mileage-edit">
+                        <input class="edit-in" type="number" value="" id="mileage-${member.id}">
+                        <button class="edit-btn" onclick="updateMileage(${member.id})">수정</button>
+                    </div>
+                </td>
                 <td><button class="delete-btn" onclick="deleteMember(${member.id})" readonly>삭제</button></td>
         `;
 
@@ -137,7 +144,7 @@ async function deleteMember(id) {
 
     try {
         //console.log("회원 삭제 요청: ID ${id}")'
-        const response = await fetch('http://www.rootairs.com/api/admin/delete_member', {
+        const response = await fetch('http://58.127.241.84:60119/api/admin/delete_member', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -190,5 +197,37 @@ function searchMembers() {
         // 검색어 포함 여부 확인 후 표시/숨김 처리
         row.style.display = input === "" || rowText.includes(input) ? "" : "none";
     });
+}
+async function updateMileage(id) {
+    const input = document.getElementById(`mileage-${id}`);
+    const mileage = input.value;
+
+    if (!mileage) {
+        alert("마일리지를 입력해 주세요.");
+        return;
+    }
+
+    try {
+        const response = await fetch('http://58.127.241.84:60119/api/admin/update_mileage', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ id: id, mileage: mileage })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert(data.message);
+            members = data.members;  // 최신 목록으로 덮어쓰기
+            displayMembers();
+            displayPagination();
+        } else {
+            alert(data.error || "수정 실패");
+        }
+    } catch (error) {
+        console.error("마일리지 수정 중 오류:", error);
+        alert("서버 오류가 발생했습니다.");
+    }
 }
 

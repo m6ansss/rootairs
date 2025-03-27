@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        fetch("http://www.rootairs.com/api/mypage/cancel", {
+        fetch("http://58.127.241.84:60119/api/mypage/cancel", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("📌 회원 탈퇴 응답:", data);
             if (data.success) {
                 alert("회원 탈퇴가 완료되었습니다.");
-                window.location.href = "http://www.rootairs.com:80/main/main.html"; // 메인 페이지로 이동
+                window.location.href = "http://58.127.241.84:61080/main/main.html"; // 메인 페이지로 이동
             } else {
                 errorMessage.textContent = data.error || "비밀번호가 일치하지 않습니다.";
                 errorMessage.style.display = "block";

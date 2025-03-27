@@ -1,6 +1,6 @@
 
 document.addEventListener("DOMContentLoaded", function () {
-    fetch("http://www.rootairs.com/api/member/status", {
+    fetch("http://58.127.241.84:60119/api/member/status", {
         method: "GET",
         credentials: "include"
     })
@@ -9,25 +9,32 @@ document.addEventListener("DOMContentLoaded", function () {
         const navbarMember = document.getElementById("navbar_member");
         navbarMember.innerHTML = "";  // 기존 내용 초기화
 
+        // 🚫 접근 제어: 비관리자일 경우 접근 차단
+        if (!data.is_authenticated || !data.is_admin) {
+            alert("해당 페이지는 관리자만 접근 가능합니다.");
+            window.location.href = "http://58.127.241.84:61080/notices/notices.html";
+            return;
+        }
+
         if (data.is_authenticated) {
             if (data.is_admin) {
                 // ✅ 관리자 계정
                 navbarMember.innerHTML = `
-                    <li class="navbar_signup"><a href="http://www.rootairs.com/api/member/logout">로그아웃</a></li>
-                    <li class="navbar_login"><a href="http://www.rootairs.com:80/admin/admin_man.html">회원정보</a></li>
+                    <li class="navbar_signup"><a href="http://58.127.241.84:60119/api/member/logout">로그아웃</a></li>
+                    <li class="navbar_login"><a href="http://58.127.241.84:61080/admin/admin_man.html">회원정보</a></li>
                 `;
             } else {
                 // ✅ 일반 로그인 사용자
                 navbarMember.innerHTML = `
-                    <li class="navbar_signup"><a href="http://www.rootairs.com/api/member/logout">로그아웃</a></li>
-                    <li class="navbar_login"><a href="http://www.rootairs.com:80/mypage/mypage.html">마이페이지</a></li>
+                    <li class="navbar_signup"><a href="http://58.127.241.84:60119/api/member/logout">로그아웃</a></li>
+                    <li class="navbar_login"><a href="http://58.127.241.84:61080/mypage/mypage.html">마이페이지</a></li>
                 `;
             }
         } else {
             // ✅ 비로그인 상태
             navbarMember.innerHTML = `
-                <li class="navbar_signup"><a href="http://www.rootairs.com:80/member/member_email.html">회원가입</a></li>
-                <li class="navbar_login"><a href="http://www.rootairs.com:80/member/member_login.html">로그인</a></li>
+                <li class="navbar_signup"><a href="http://58.127.241.84:61080/member/member_email.html">회원가입</a></li>
+                <li class="navbar_login"><a href="http://58.127.241.84:61080/member/member_login.html">로그인</a></li>
             `;
         }
     })
@@ -49,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const formData = new FormData(form); // ✅ 폼 데이터 가져오기
 
         // ✅ 서버로 공지사항 등록 요청
-        fetch("http://www.rootairs.com/api/notices/create", {
+        fetch("http://58.127.241.84:60119/api/notices/create", {
             method: "POST",
             credentials: "include",  // ✅ 세션 유지 (로그인 상태 확인)
             body: formData
@@ -65,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (data.redirect_url) {
                 alert("공지 등록 성공!");
-		window.location.href = "http://www.rootairs.com:80/notices/notices.html";
+		window.location.href = "http://58.127.241.84:61080/notices/notices.html";
             } else {
                 alert("공지 등록 실패: " + (data.error || "알 수 없는 오류"));
             }

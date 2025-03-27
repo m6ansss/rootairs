@@ -8,13 +8,29 @@ document.addEventListener("DOMContentLoaded", function () {
     const passwordInput = document.getElementById("passwordInput");
     const confirmPasswordBtn = document.getElementById("confirmPasswordBtn");
 
+    // ✅ 비밀번호 확인 모달 숨기기
+   // const passwordModalPage = document.getElementById("passwordModal_page");
+   // if (passwordModalPage) {
+   //     passwordModalPage.style.display = "none";  // 모달 숨기기
+   // }
+
     // ✅ 회원정보 폼 요소
     const editFormContainer = document.getElementById("editFormContainer");
     const editForm = document.getElementById("Edit_memberinfoForm");
 
+    // ✅ 회원정보 수정 폼이 보이도록 강제 설정
+    //if (editFormContainer) {
+    //    editFormContainer.style.display = "flex";  // 폼 보이게 설정
+    //    editFormContainer.style.flexDirection = "column"; // 세로 정렬
+    //    editFormContainer.style.alignItems = "center"; // 중앙 정렬
+    //    editFormContainer.style.justifyContent = "center"; // 내부 요소 가운데 정렬
+    //    editFormContainer.style.visibility = "visible"; // 혹시 hidden 상태라면 보이게 설정
+    //    editFormContainer.style.opacity = "1"; // 투명도 조절
+    //}
+
     // ✅ 사용자 정보 불러오기
     function loadUserInfo() {
-        fetch("http://www.rootairs.com/api/mypage/user_info", {
+        fetch("http://58.127.241.84:60119/api/mypage/user_info", {
             method: "GET",
             credentials: "include"
         })
@@ -39,6 +55,8 @@ document.addEventListener("DOMContentLoaded", function () {
         .catch(error => console.error("🚨 사용자 정보 불러오기 중 오류 발생:", error));
     }
 
+  loadUserInfo();
+
     // ✅ 비밀번호 확인 버튼 클릭 이벤트
     if (confirmPasswordBtn) {
         confirmPasswordBtn.addEventListener("click", function () {
@@ -49,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             console.log("📌 비밀번호 확인 요청 시작...");
-            fetch("http://www.rootairs.com/api/mypage/verify_password", {
+            fetch("http://58.127.241.84:60119/api/mypage/verify_password", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
@@ -101,11 +119,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // ✅ 비밀번호 유효성 검사
             if (password) {
-                const isValid = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}$/.test(password);
-                if (!isValid) {
-                    alert("비밀번호는 영문, 숫자, 특수문자를 포함한 8~20자로 설정해야 합니다.");
-                    return;
-                }
+               // const isValid = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}$/.test(password);
+               // if (!isValid) {
+                 //   alert("비밀번호는 영문, 숫자, 특수문자를 포함한 8~20자로 설정해야 합니다.");
+                   // return;
+               // }
                 if (password !== confirmPassword) {
                     alert("비밀번호가 일치하지 않습니다.");
                     return;
@@ -126,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // ✅ 서버로 회원정보 업데이트 요청
-            fetch("http://www.rootairs.com/api/mypage/update", {
+            fetch("http://58.127.241.84:60119/api/mypage/update", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
@@ -137,7 +155,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.log("📌 회원정보 수정 응답:", data);
                 if (data.success) {
                     alert("회원정보가 성공적으로 업데이트되었습니다.");
-                    window.location.href = "http://www.rootairs.com:80/mypage/mypage.html";  // ✅ 마이페이지로 이동
+                    window.location.href = "http://58.127.241.84:61080/mypage/mypage.html";  // ✅ 마이페이지로 이동
                 } else {
                     alert("업데이트 실패: " + data.message);
                 }

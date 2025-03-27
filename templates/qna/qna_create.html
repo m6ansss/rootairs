@@ -14,14 +14,14 @@
 <body>
     <nav class="navbar">
         <div class="navbar_logo">
-            <a href="http://www.rootairs.com:80/main/main.html">
+            <a href="http://58.127.241.84:61080/main/main.html">
                 <img src="/static/images/rootair.jpg"/>
             </a>
         </div>
         <ul class="navbar_menu">
-            <li><a href="http://www.rootairs.com:80/main/main.html">예약</a></li>
-            <li><a href="http://www.rootairs.com:80/notices/notices.html">공지사항</a></li>
-            <li><a href="http://www.rootairs.com:80/qna/qna.html">문의사항</a></li>            
+            <li><a href="http://58.127.241.84:61080/main/main.html">예약</a></li>
+            <li><a href="http://58.127.241.84:61080/notices/notices.html">공지사항</a></li>
+            <li><a href="http://58.127.241.84:61080/qna/qna.html">문의사항</a></li>            
         </ul>
         <ul class="navbar_member" id="navbar_member">
             <!-- 로그인 상태에 따라 동적 업데이트 -->
@@ -38,7 +38,7 @@
             <label for="title">제목</label>
             <input type="text" id="title" name="title" placeholder="제목을 입력하세요">
 
-            <label for="file">첨부 파일</label>
+            <label for="file">첨부 파일 ( 10MB 이하의 용량인 pdf, png, jpg, jpeg, txt 파일만 첨부하실 수 있습니다. )</label>
             <input type="file" id="file" name="file">
 
             <label for="content">내용</label>
@@ -53,6 +53,40 @@
             <button type="submit" id="submit_btn">문의 등록</button>
         </form>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("qnaForm").addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                let formData = new FormData();
+                formData.append("title", document.getElementById("title").value);
+                formData.append("content", document.getElementById("content").value);
+                formData.append("isSecret", document.getElementById("private").checked ? "true" : "false");
+
+                let fileInput = document.getElementById("file");
+                if (fileInput.files.length > 0) {
+                    formData.append("file", fileInput.files[0]);
+                }
+
+                fetch("/api/qna/create", {  // ✅ API 호출 방식으로 변경
+                    method: "POST",
+                    body: formData,
+                    credentials: "include"
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        alert(data.message);
+                        window.location.href = "http://58.127.241.84:61080/qna/qna.html";  // ✅ 정확한 경로 지정
+                    } else {
+                        alert("문의 등록 실패: " + data.error);
+                    }
+                })
+                .catch(error => console.error("문의 등록 중 오류 발생:", error));
+            });
+        });
+    </script>
 
     <script src="/static/js/qna/qna_create.js"></script>
 </body>

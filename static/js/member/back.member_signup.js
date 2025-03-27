@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     /** ✅ 네비게이션바 로그인 상태 업데이트 */
     function updateNavbar() {
-        fetch("http://www.rootairs.com/api/member/status", {
+        fetch("http://58.127.241.84:60119/api/member/status", {
             credentials: "include" // ✅ 쿠키 포함
         })
         .then(response => response.json())
@@ -28,13 +28,13 @@ document.addEventListener("DOMContentLoaded", function () {
             navbarMember.innerHTML = ""; // 기존 내용 초기화
             if (data.is_authenticated) {
                 navbarMember.innerHTML = data.is_admin
-                    ? `<li><a href="http://www.rootairs.com/api/member/logout">로그아웃</a></li>
-                       <li><a href="http://www.rootairs.com:80/admin/admin_man.html">회원정보</a></li>`
-                    : `<li><a href="http://www.rootairs.com/api/member/logout">로그아웃</a></li>
-                       <li><a href="http://www.rootairs.com:80/mypage/mypage.html">마이페이지</a></li>`;
+                    ? `<li><a href="http://58.127.241.84:60119/api/member/logout">로그아웃</a></li>
+                       <li><a href="http://58.127.241.84:61080/admin/admin_man.html">회원정보</a></li>`
+                    : `<li><a href="http://58.127.241.84:60119/api/member/logout">로그아웃</a></li>
+                       <li><a href="http://58.127.241.84:61080/mypage/mypage.html">마이페이지</a></li>`;
             } else {
-                navbarMember.innerHTML = `<li><a href="http://www.rootairs.com:80/member/member_signup.html">회원가입</a></li>
-                                          <li><a href="http://www.rootairs.com:80/member/member_login.html">로그인</a></li>`;
+                navbarMember.innerHTML = `<li><a href="http://58.127.241.84:61080/member/member_signup.html">회원가입</a></li>
+                                          <li><a href="http://58.127.241.84:61080/member/member_login.html">로그인</a></li>`;
             }
         })
         .catch(error => console.error("사용자 상태 확인 중 오류 발생:", error));
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updateNavbar(); // 페이지 로드 시 즉시 실행
 
     /** ✅ 이메일 인증 후 자동 입력 */
-    fetch("http://www.rootairs.com/api/member/get_verified_email", {
+    fetch("http://58.127.241.84:60119/api/member/get_verified_email", {
         method: "GET",
         credentials: "include"
     })
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("email").value = data.email;
         } else {
             alert("이메일 인증이 필요합니다.");
-            window.location.href = "http://www.rootairs.com:80/member/member_email.html";
+            window.location.href = "http://58.127.241.84:61080/member/member_email.html";
         }
     })
     .catch(error => console.error("이메일 확인 오류:", error));
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        fetch("http://www.rootairs.com/api/member/check-id", {
+        fetch("http://58.127.241.84:60119/api/member/check-id", {
             method: "POST",
             credentials: "include", // ✅ 쿠키 포함
             headers: { "Content-Type": "application/json" },
@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
             email: emailInput.value
         };
 
-        fetch("http://www.rootairs.com/api/member/signup", {
+        fetch("http://58.127.241.84:60119/api/member/signup", {
             method: "POST",
             credentials: "include", // ✅ 쿠키 포함
             headers: { "Content-Type": "application/json" },
@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (data.message) {
                 alert("회원가입 성공!");
                 document.cookie = "email_verified=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                window.location.href = "http://www.rootairs.com:80/member/member_login.html";
+                window.location.href = "http://58.127.241.84:61080/member/member_login.html";
             } else {
                 alert("회원가입 실패: " + data.error);
             }

@@ -1,6 +1,6 @@
                 // 네비게이션 스크립트
     document.addEventListener("DOMContentLoaded", function () {
-        fetch("http://www.rootairs.com/api/member/status", {
+        fetch("http://58.127.241.84:60119/api/member/status", {
                 method: "GET",
                 credentials:"include"
             })
@@ -12,21 +12,21 @@
                     if (data.is_admin) {
                         // ✅ 관리자 계정
                         navbarMember.innerHTML = `
-                            <li class="navbar_signup"><a href="http://www.rootairs.com/api/member/logout">로그아웃</a></li>
-                            <li class="navbar_login"><a href="http://www.rootairs.com:80/admin/admin_man.html">회원정보</a></li>
+                            <li class="navbar_signup"><a href="http://58.127.241.84:60119/api/member/logout">로그아웃</a></li>
+                            <li class="navbar_login"><a href="http://58.127.241.84:61080/admin/admin_man.html">회원정보</a></li>
                         `;
                     } else {
                         // ✅ 일반 로그인 사용자
                         navbarMember.innerHTML = `
-                            <li class="navbar_signup"><a href="http://www.rootairs.com/api/member/logout">로그아웃</a></li>
-                            <li class="navbar_login"><a href="http://www.rootairs.com:80/mypage/mypage.html">마이페이지</a></li>
+                            <li class="navbar_signup"><a href="http://58.127.241.84:60119/api/member/logout">로그아웃</a></li>
+                            <li class="navbar_login"><a href="http://58.127.241.84:61080/mypage/mypage.html">마이페이지</a></li>
                         `;
                     }
                 } else {
                     // ✅ 비로그인 상태
                     navbarMember.innerHTML = `
-                        <li class="navbar_signup"><a href="http://www.rootairs.com:80/member/member_email.html">회원가입</a></li>
-                        <li class="navbar_login"><a href="http://www.rootairs.com:80/member/member_login.html">로그인</a></li>
+                        <li class="navbar_signup"><a href="http://58.127.241.84:61080/member/member_email.html">회원가입</a></li>
+                        <li class="navbar_login"><a href="http://58.127.241.84:61080/member/member_login.html">로그인</a></li>
                     `;
                 }
             })
@@ -111,8 +111,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // ✅ fetch를 사용하여 `POST` 요청 보내기
-console.log("📢 [JS] API 요청 시작: POST http://www.rootairs.com/api/main/book");
-fetch("http://www.rootairs.com/api/main/book", {
+console.log("📢 [JS] API 요청 시작: POST http://58.127.241.84:60119/api/main/book");
+fetch("http://58.127.241.84:60119/api/main/book", {
     method: "POST",
     credentials: "include",  // ✅ 인증 쿠키 포함!
     headers: {
@@ -162,12 +162,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // ✅ `flight_id`가 없으면 목록 페이지로 이동
     if (!flightId) {
         alert("항공편 ID가 없습니다.");
-        window.location.href = "http://www.rootairs.com:80/main/main_list.html";
+        window.location.href = "http://58.127.241.84:61080/main/main_list.html";
         return;
     }
 
     // ✅ API 요청 URL 생성
-    const apiUrl = `http://www.rootairs.com/api/main/list/detail/${flightId}?passengers=${passengers}`;
+    const apiUrl = `http://58.127.241.84:60119/api/main/list/detail/${flightId}?passengers=${passengers}`;
     console.log("API 요청 URL:", apiUrl); // ✅ URL 확인
 
     // ✅ `fetch`를 사용하여 항공편 정보 가져오기
@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             if (data.error) {
                 alert("항공편 정보를 찾을 수 없습니다.");
-                window.location.href = "http://www.rootairs.com:80/main/main_list.html";
+                window.location.href = "http://58.127.241.84:61080/main/main_list.html";
                 return;
             }
 
