@@ -1,0 +1,112 @@
+<VirtualHost *:80>
+	# The ServerName directive sets the request scheme, hostname and port that
+	# the server uses to identify itself. This is used when creating
+	# redirection URLs. In the context of virtual hosts, the ServerName
+	# specifies what hostname must appear in the request's Host: header to
+	# match this virtual host. For the default virtual host (this file) this
+	# value is not decisive as it is used as a last resort host regardless.
+	# However, you must set it for any further virtual host explicitly.
+	#ServerName www.example.com
+
+	ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/html/templates
+
+        <Directory /var/www/html/templates>
+           Options Indexes FollowSymLinks
+           AllowOverride None
+           Require all granted
+        </Directory>
+
+        Header set Access-Control-Allow-Origin "*"
+        Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+        Header set Access-Control-Allow-Headers "Content-Type"
+
+        Alias /static/ "/var/www/html/static/"
+
+        <Directory /var/www/html/static>
+            Options Indexes FollowSymLinks
+            AllowOverride None
+            Require all granted
+        </Directory>
+ 
+        Alias /uploads/ "/var/www/html/uploads/"
+        
+        # file upload
+	<Directory "/var/www/html/uploads">
+            Options FollowSymLinks
+            AllowOverride None
+            # /uploads/ 접근 허용
+            Require all granted
+            #  확장자 차단
+            <FilesMatch "\.(php|sh|exe|cgi)$">
+               Require all denied
+            </FilesMatch>
+            # 파일 강제 다운로드
+            <FilesMatch "\.(png|jpg|jpeg|gif|pdf|txt|csv|mp4|mp3)$">
+               Header set Content-Disposition "attachment"
+            </FilesMatch>
+        </Directory>
+
+
+        RewriteEngine On
+
+        RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_URI}.html -f
+        RewriteRule ^(.+)$ /%{REQUEST_URI}.html [L]
+
+        RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_URI}/$1.html -f
+        RewriteRule ^([^/]+)/$ /$1/$1.html [L]
+
+
+
+        #<Directory /var/www/html/templates/notices>
+        #    Options Indexes FollowSymLinks
+        #    AllowOverride All
+        #    DirectoryIndex notices.html index.html
+        #    Require all granted
+        #</Directory>
+	# Flask server proxy config
+	# ProxyPass / http://192.168.0.26:5000/
+	# ProxyPassReverse / http://192.168.0.26:5000/
+
+        # RequestHeader set X-Forwarded-For %{REMOTE_ADDR}s
+
+	# Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+	# error, crit, alert, emerg.
+	# It is also possible to configure the loglevel for particular
+	# modules, e.g.
+	#LogLevel info ssl:warn
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+        
+	# For most configuration files from conf-available/, which are
+	# enabled or disabled at a global level, it is possible to
+	# include a line for only one particular virtual host. For example the
+	# following line enables the CGI configuration for this host only
+	# after it has been globally disabled with "a2disconf".
+	#Include conf-available/serve-cgi-bin.conf
+#</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+
+#<VirtualHost *:61080>
+#   ServerAdmin admin@example.com
+#    ServerName 58.127.241.84
+    
+    # Only API
+    ProxyPass "/api/" "http://10.0.3.150:5000/api"
+    ProxyPassReverse "/api/" "http://10.0.3.150:5000/api"
+
+    <Proxy *>
+        Require all granted
+    </Proxy>
+
+    # Client IP
+    RequestHeader set X-Forwarded-For %{REMOTE_ADDR}s	
+    # HTTPS info
+    RequestHeader set X-Forwarded-Proto "https"
+   
+    ErrorLog ${APACHE_LOG_DIR}/api_error.log
+    CustomLog ${APACHE_LOG_DIR}/api_access.log combined
+
+</VirtualHost>
